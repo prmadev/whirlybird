@@ -1,14 +1,35 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+//! `whirlybird` is a library of generic type implementations for RedMaple library, that offers workflows for different events compatible with common contents like todos, blogs and etc.
+//!
+//! `whirlybird` is still in its infancy. And for now, at least, it is not fully formed.
+//! There is a 100% certainty that if I can, I will strip away some items in it.
+//! So please, do not use it for now. Version numbering will tell you if things got stabilised.
+//!
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+#![deny(missing_docs)]
+#![deny(clippy::expect_used)]
+#![deny(clippy::unwrap_used)]
+#![deny(clippy::indexing_slicing)]
+#![deny(clippy::panic)]
+#![warn(
+    rust_2018_idioms,
+    clippy::pedantic,
+    clippy::cargo,
+    clippy::clone_on_ref_ptr,
+    clippy::default_numeric_fallback,
+    clippy::string_to_string,
+    clippy::unnecessary_self_imports,
+    clippy::str_to_string,
+    clippy::same_name_method,
+    clippy::rc_buffer,
+    clippy::panic_in_result_fn,
+    clippy::multiple_inherent_impl,
+    clippy::map_err_ignore,
+    clippy::if_then_some_else_none,
+    clippy::empty_structs_with_brackets,
+    clippy::useless_let_if_seq,
+    clippy::use_self,
+    clippy::missing_const_for_fn,
+    clippy::cognitive_complexity,
+    clippy::self_named_constructors
+)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
