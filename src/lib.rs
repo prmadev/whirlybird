@@ -1,4 +1,4 @@
-//! `whirlybird` is a library of generic type implementations for RedMaple library, that offers workflows for different events compatible with common contents like todos, blogs and etc.
+//! `whirlybird` is a library of generic type implementations for `RedMaple` library, that offers workflows for different events compatible with common contents like todos, blogs and etc.
 //!
 //! `whirlybird` is still in its infancy. And for now, at least, it is not fully formed.
 //! There is a 100% certainty that if I can, I will strip away some items in it.
