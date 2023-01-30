@@ -2,7 +2,13 @@
 name = "whirlybird"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Amir Alesheikh <amirhossein.alehseikh@gmail.com>"]
+description = "whirlybird is a library of generic type implementations for RedMaple library, that offers workflows for different events compatible with common contents like todos, blogs and etc."
+homepage = "https://github.com/amirography/whirlybird"
+repository = "https://github.com/amirography/whirlybird"
+license = "Apache-2.0"
+categories = ["data-structures"]
+keywords = ["data_model", "event-sourcing", "events"]
+readme = "README.md"
 
 [dependencies]
