@@ -49,12 +49,12 @@ jobs:
 
       - name: Check
         run: |
-          cargo deny check
-          cargo outdated --exit-code 1
-          cargo udeps
+          rustup run nightly cargo deny check
+          rustup run nightly cargo outdated --exit-code 1
+          rustup run nightly cargo udeps
           rm -rf ~/.cargo/advisory-db
-          cargo audit
-          cargo pants
+          rustup run nightly cargo audit
+          rustup run nightly cargo pants
       - name: build
         run: cargo build --verbose
 
