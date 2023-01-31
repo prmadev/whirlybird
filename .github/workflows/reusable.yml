@@ -49,8 +49,8 @@ jobs:
 
       - name: Check
         run: |
-          rustup run nightly cargo deny check
-          rustup run nightly cargo outdated --exit-code 1
+          cargo deny check
+          cargo outdated --exit-code 1
           rustup run nightly cargo udeps
           rm -rf ~/.cargo/advisory-db
           rustup run nightly cargo audit
