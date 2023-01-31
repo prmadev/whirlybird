@@ -12,4 +12,4 @@ keywords = ["data_model", "event-sourcing", "events"]
 readme = "README.md"
 
 [dependencies]
-redmaple = { path = '../redmaple' }
+redmaple = "0.2.0"
