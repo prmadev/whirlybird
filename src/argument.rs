@@ -1,7 +1,7 @@
 //! This is an implementation of the `EventGroup` used as an exmaple of the basic logic neccessary,
 //! to create your own event type
 
-use redmaple::redmaple::{event_group::EventGroup, id::ID};
+use redmaple::{event_group::EventGroup, id::ID};
 
 use self::{maple_created::Created, views::BlogMode};
 

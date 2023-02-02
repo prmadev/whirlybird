@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use redmaple::redmaple::id::ID;
+use redmaple::id::ID;
 
 /// Content type sets the mode of each content.
 #[derive(Debug, Clone)]
