@@ -1,5 +1,7 @@
 //! `views` implement `ViewMode`s that are suitable for `Argument` implementation of `RedMaple`
 
+use std::fmt::Display;
+
 use redmaple::view_mode::ViewMode;
 
 /// Holds the different view modes that the `RedMaple` could present
@@ -20,19 +22,32 @@ pub enum Views {
     TodoList,
 }
 
+// implementation of `Display` is neccessary for later implementation of `ViewMode` trait
+impl Display for Views {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::Blog(m) => match m {
+                    BlogMode::Text => "BlogText",
+                    BlogMode::PhotoSlide => "BlogPhotoSlide",
+                    BlogMode::Video => "BlogVideo",
+                },
+                Self::Conversation => "Conversation",
+                Self::ResponseLinks => "ResponseLinks",
+                Self::CuratedList => "CuratedList",
+                Self::TodoList => "TodoList",
+            }
+        )
+    }
+}
+
 impl ViewMode for Views {
-    fn name(&self) -> String {
-        match self {
-            Self::Blog(m) => match m {
-                BlogMode::Text => "BlogText".to_owned(),
-                BlogMode::PhotoSlide => "BlogPhotoSlide".to_owned(),
-                BlogMode::Video => "BlogVideo".to_owned(),
-            },
-            Self::Conversation => "Conversation".to_owned(),
-            Self::ResponseLinks => "ResponseLinks".to_owned(),
-            Self::CuratedList => "CuratedList".to_owned(),
-            Self::TodoList => "TodoList".to_owned(),
-        }
+    type Identifier = Self;
+
+    fn get(&self) -> &Self::Identifier {
+        self
     }
 }
 
