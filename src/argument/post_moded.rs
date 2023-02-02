@@ -1,4 +1,4 @@
-use redmaple::redmaple::{id::ID, RedMaple};
+use redmaple::{id::ID, RedMaple};
 
 use super::{
     post::{Mode, Post},

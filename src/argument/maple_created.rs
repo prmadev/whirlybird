@@ -1,7 +1,7 @@
 //! [`Created`] is an special event which starts a new `RedMaple` and should be the first event of each
 //! `RedMaple`.
 
-use redmaple::redmaple::id::ID;
+use redmaple::id::ID;
 use redmaple::view_mode::ViewMode;
 
 /// Creates a new instance of Story
@@ -58,7 +58,7 @@ impl<V: ViewMode + Sized + Clone> Created<V> {
 mod tests {
     // use redmaple::view_mode::BlogMode;
 
-    use redmaple::redmaple::id::ID;
+    use redmaple::id::ID;
 
     use crate::argument::{
         maple_created::Created,
@@ -72,8 +72,8 @@ mod tests {
 
         assert_eq!(new_event.redmaple_id(), &red_maple_id);
         assert_eq!(
-            new_event.id().uuid().to_string().len(),
-            red_maple_id.uuid().to_string().len()
+            new_event.id().into_inner().to_string().len(),
+            red_maple_id.into_inner().to_string().len()
         );
     }
 }

@@ -42,8 +42,8 @@ mod tests {
 
     use argument::Argument;
     use redmaple::{
-        redmaple::{event_group::EventGroup, id::ID, RedMaple},
         store::{EventStorage, FindError, SaveError},
+        {event_group::EventGroup, id::ID, RedMaple},
     };
 
     use crate::argument::views::Views;
