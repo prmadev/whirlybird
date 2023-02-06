@@ -94,7 +94,9 @@ mod tests {
             self.get_events().map(|ms| {
                 ms.iter()
                     .filter_map(|x| match &x {
-                        Argument::Created(f) => Some(RedMaple::new(f.view_mode(), f.id())),
+                        Argument::Created(f) => {
+                            Some(RedMaple::new(f.view_mode().clone(), f.id().clone()))
+                        }
 
                         _ => None,
                     })
