@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4](https://github.com/amirography/whirlybird/compare/v0.1.3...v0.1.4) - 2023-02-11
+
+### Added
+- implement ViewMode for BlogMode
+
 ## [0.1.3](https://github.com/amirography/whirlybird/compare/v0.1.2...v0.1.3) - 2023-02-06
 
 ### Added
