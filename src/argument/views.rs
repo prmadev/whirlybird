@@ -63,3 +63,24 @@ pub enum BlogMode {
     /// Video represent a video stream as the main post
     Video,
 }
+
+impl Display for BlogMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::Text => "BlogMode(Text)",
+                Self::PhotoSlide => "BlogMode(PhotoSlide)",
+                Self::Video => "BlogMode(Video)",
+            }
+        )
+    }
+}
+impl ViewMode for BlogMode {
+    type Identifier = Self;
+
+    fn get(&self) -> &Self::Identifier {
+        self
+    }
+}
