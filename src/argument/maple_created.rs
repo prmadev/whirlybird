@@ -1,6 +1,8 @@
 //! [`Created`] is an special event which starts a new `RedMaple` and should be the first event of each
 //! `RedMaple`.
 
+use std::time::SystemTime;
+
 use redmaple::id::ID;
 use redmaple::view_mode::ViewMode;
 
@@ -11,6 +13,7 @@ use redmaple::view_mode::ViewMode;
 #[derive(Clone, Debug)]
 pub struct Created<V: ViewMode + Sized + Clone> {
     id: ID,
+    created: SystemTime,
     redmaple_id: ID,
     view_mode: V,
 }
@@ -24,6 +27,7 @@ impl<V: ViewMode + Sized + Clone> Created<V> {
     pub fn new(view_mode: V, redmaple_id: ID) -> Self {
         Self {
             id: ID::new(),
+            created: std::time::SystemTime::now(),
             redmaple_id,
             view_mode,
         }
@@ -52,6 +56,12 @@ impl<V: ViewMode + Sized + Clone> Created<V> {
     // ) -> Result<(), crate::store::ApplyError> {
     //     store.apply(self)
     // }
+
+    /// returns the creation time of event
+    #[must_use]
+    pub const fn created(&self) -> &SystemTime {
+        &self.created
+    }
 }
 
 #[cfg(test)]

@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use redmaple::id::ID;
 
 /// Content type sets the mode of each content.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Mode {
     /// The main post of the redmaple
     HeadPost,
@@ -14,13 +14,14 @@ pub enum Mode {
 }
 
 /// Content holds the different forms of content
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Post {
     /// A Text content is a string.
     Text { id: ID },
     /// A Text content is a subscription to a picture stream.
     Picture { id: ID },
 }
+
 impl Post {
     pub const fn id(&self) -> &ID {
         match self {

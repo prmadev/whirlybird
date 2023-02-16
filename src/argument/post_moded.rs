@@ -1,3 +1,5 @@
+use std::time::SystemTime;
+
 use redmaple::{id::ID, RedMaple};
 
 use super::{
@@ -10,6 +12,7 @@ use super::{
 #[derive(Debug, Clone)]
 pub struct ContentModed {
     id: ID,
+    created: SystemTime,
     redmaple_id: ID,
     post_id: ID,
     new_mod: Mode,
@@ -20,6 +23,7 @@ impl ContentModed {
     pub fn new(red_maple: &RedMaple<Argument, Views>, post: &Post, new_mod: Mode) -> Self {
         Self {
             id: ID::new(),
+            created: std::time::SystemTime::now(),
             redmaple_id: red_maple.id().clone(),
             post_id: post.id().clone(),
             new_mod,
@@ -44,5 +48,11 @@ impl ContentModed {
     /// return the new mode that this event makes
     pub const fn new_mod(&self) -> &Mode {
         &self.new_mod
+    }
+
+    /// returns the creation time of event
+    #[must_use]
+    pub const fn created(&self) -> &SystemTime {
+        &self.created
     }
 }
