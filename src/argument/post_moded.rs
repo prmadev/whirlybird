@@ -20,7 +20,11 @@ pub struct ContentModed {
 
 impl ContentModed {
     /// Creates an event that states that some content has changed their mod to a given one.
-    pub fn new(red_maple: &RedMaple<Argument, Views>, post: &Post, new_mod: Mode) -> Self {
+    pub fn new(
+        red_maple: &RedMaple<Argument, Views>,
+        post: &Post<String, String>,
+        new_mod: Mode,
+    ) -> Self {
         Self {
             id: ID::new(),
             created: std::time::SystemTime::now(),
