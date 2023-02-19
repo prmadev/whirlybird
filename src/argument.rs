@@ -1,9 +1,16 @@
 //! This is an implementation of the `EventGroup` used as an exmaple of the basic logic neccessary,
 //! to create your own event type
 
-use redmaple::{event_group::EventGroup, id::ID};
+use std::time::SystemTime;
 
-use self::{maple_created::Created, views::BlogMode};
+use redmaple::{event_group::EventGroup, id::ID, versioned::Versioned};
+use thiserror::Error;
+
+use self::{
+    maple_created::Created,
+    post::{Mode, Post},
+    views::{BlogMode, Views},
+};
 
 mod maple_created;
 mod post;
@@ -28,7 +35,166 @@ pub enum Argument {
     PostDeleted(post_deleted::PostDeleted),
 }
 
+/// Dialog creates an instance of a person talking
+///
+/// * `id`: is of the type [`ID`] and should be the same type as a [`Post`] ID
+/// * `posted`: of the type [`std::time::SystemTime`] and shows the time the dialog was created
+/// * `published`: [`Option<std::time::SystemTime>`] if published the time of publication.
+/// * `mode`: of the type [`Mode`]
+/// * `content`:  content which is for now `String`. TODO: make enum which can hold a subscription
+/// to a media as well
+pub struct Dialog {
+    id: ID,
+    posted: SystemTime,
+    published: Option<SystemTime>,
+    mode: Mode,
+    content: String,
+}
+
+impl Dialog {
+    /// retuns the [`ID`] of the [`Dialog`]
+    #[must_use]
+    pub const fn id(&self) -> &ID {
+        &self.id
+    }
+
+    /// returns the time the [`Dialog`] was originally created
+    #[must_use]
+    pub const fn posted(&self) -> SystemTime {
+        self.posted
+    }
+
+    /// retuns the [`Dialog`]'s status with regards to its publication
+    #[must_use]
+    pub const fn published(&self) -> Option<SystemTime> {
+        self.published
+    }
+
+    /// returns the [`Mode`] in which the [`Dialog`] is in
+    #[must_use]
+    pub const fn mode(&self) -> &Mode {
+        &self.mode
+    }
+
+    /// returns the content of the the dialog
+    #[must_use]
+    pub fn content(&self) -> &str {
+        self.content.as_ref()
+    }
+}
+
+impl From<&Post<String, String>> for Dialog {
+    fn from(value: &Post<String, String>) -> Self {
+        Self {
+            id: value.id().clone(),
+            posted: *value.date(),
+            published: None,
+            mode: Mode::HeadPost,
+            content: value.content().clone(),
+        }
+    }
+}
+
+/// holds the state of an [`Argument`]
+pub struct State {
+    version: u64,
+    view: Views,
+    dialogs: Vec<Dialog>,
+}
+
+impl State {
+    /// Returns a reference to the view of this [`ArgumentState`].
+    pub const fn view(&self) -> &Views {
+        &self.view
+    }
+
+    /// Sets the view of this [`ArgumentState`].
+    fn set_view(&mut self, view: Views) {
+        self.view = view;
+    }
+
+    /// Returns a reference to the posts of this [`ArgumentState`].
+    #[must_use]
+    pub fn dialogs(&self) -> &[Dialog] {
+        self.dialogs.as_ref()
+    }
+
+    /// Adds a [`Dialog`]
+    fn add_dialog(&mut self, post: Dialog) {
+        self.dialogs.push(post);
+    }
+
+    fn publish_dialog(&mut self, id: &ID, time: SystemTime) -> Result<(), StateChangeError> {
+        match self.dialogs.iter_mut().find(|dialog| dialog.id() == id) {
+            Some(mut dialog) => {
+                if dialog.published().is_some() {
+                    Err(StateChangeError::AlreadyDone)
+                } else {
+                    dialog.published = Some(time);
+                    Ok(())
+                }
+            }
+            None => Err(StateChangeError::NotFound),
+        }
+    }
+
+    fn unpublish_dialog(&mut self, id: &ID) -> Result<(), StateChangeError> {
+        match self.dialogs.iter_mut().find(|dialog| dialog.id() == id) {
+            Some(mut dialog) => {
+                if dialog.published().is_none() {
+                    Err(StateChangeError::AlreadyDone)
+                } else {
+                    dialog.published = None;
+                    Ok(())
+                }
+            }
+            None => Err(StateChangeError::NotFound),
+        }
+    }
+
+    fn mode_dialog(&mut self, id: &ID, mode: Mode) -> Result<(), StateChangeError> {
+        match self.dialogs.iter_mut().find(|dialog| dialog.id() == id) {
+            Some(mut dialog) => {
+                if dialog.mode() == &mode {
+                    Err(StateChangeError::AlreadyDone)
+                } else {
+                    dialog.mode = mode;
+                    Ok(())
+                }
+            }
+            None => Err(StateChangeError::NotFound),
+        }
+    }
+}
+
+impl Versioned for State {
+    fn version(&self) -> u64 {
+        self.version
+    }
+
+    fn increment_version(&mut self) {
+        self.version += 1;
+    }
+}
+
+#[derive(Error, Debug)]
+/// An enum which shows the errors reated to applying the event group
+pub enum StateChangeError {
+    /// States that the [`Dialog`] we are trying to publish is already at the state that was
+    /// requested
+    #[error("the dialog is already that way")]
+    AlreadyDone,
+
+    /// States that the target [`Dialog`] is not found in the ArgumentPosts
+    #[error("there is no dialog with that Id")]
+    NotFound,
+}
+
 impl EventGroup for Argument {
+    type State = State;
+
+    type EventGroupError = StateChangeError;
+
     fn id(&self) -> &ID {
         match *self {
             Self::Created(ref e) => e.id(),
@@ -69,6 +235,36 @@ impl EventGroup for Argument {
             }
             (Self::PostPublished(a), Self::PostPublished(b)) => a.post_id() == b.post_id(),
             (_, _) => false,
+        }
+    }
+
+    fn apply_to(&self, state: &mut Self::State) -> Result<(), Self::EventGroupError> {
+        match self {
+            Self::Created(c) => {
+                state.set_view(c.view_mode().clone());
+                state.increment_version();
+                Ok(())
+            }
+            Self::PostAdded(c) => {
+                state.add_dialog(Dialog::from(c.post()));
+                state.increment_version();
+                Ok(())
+            }
+            Self::PostPublished(c) => {
+                state.publish_dialog(c.id(), *c.created())?;
+                state.increment_version();
+                Ok(())
+            }
+            Self::PostModed(c) => {
+                state.mode_dialog(c.id(), c.new_mod().clone())?;
+                state.increment_version();
+                Ok(())
+            }
+            Self::PostDeleted(c) => {
+                state.unpublish_dialog(c.id())?;
+                state.increment_version();
+                Ok(())
+            }
         }
     }
 }

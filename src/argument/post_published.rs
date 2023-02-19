@@ -14,7 +14,7 @@ pub struct ContentPublished {
 }
 
 impl ContentPublished {
-    pub fn new(red_maple: &RedMaple<Argument, Views>, post: &Post) -> Self {
+    pub fn new(red_maple: &RedMaple<Argument, Views>, post: &Post<String, String>) -> Self {
         Self {
             id: ID::new(),
             created: std::time::SystemTime::now(),

@@ -15,7 +15,7 @@ pub struct PostDeleted {
 
 impl PostDeleted {
     /// Creates an event that states that some content has been deleted (invisible) to users.
-    pub fn new(red_maple: &RedMaple<Argument, Views>, post: &Post) -> Self {
+    pub fn new(red_maple: &RedMaple<Argument, Views>, post: &Post<String, String>) -> Self {
         Self {
             id: ID::new(),
             created: std::time::SystemTime::now(),

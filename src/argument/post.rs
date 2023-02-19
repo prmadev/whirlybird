@@ -1,4 +1,7 @@
-use std::fmt::Debug;
+use std::{
+    fmt::{Debug, Display},
+    time::SystemTime,
+};
 
 use redmaple::id::ID;
 
@@ -15,17 +18,36 @@ pub enum Mode {
 
 /// Content holds the different forms of content
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Post {
+pub enum Post<T: Sized + Display, P: Sized + Display> {
     /// A Text content is a string.
-    Text { id: ID },
+    Text {
+        id: ID,
+        date: SystemTime,
+        content: T,
+    },
     /// A Text content is a subscription to a picture stream.
-    Picture { id: ID },
+    Picture {
+        id: ID,
+        date: SystemTime,
+        content: P,
+    },
 }
 
-impl Post {
+impl Post<String, String> {
     pub const fn id(&self) -> &ID {
         match self {
-            Self::Text { id } | Self::Picture { id } => id,
+            Self::Text { id, .. } | Self::Picture { id, .. } => id,
+        }
+    }
+    pub const fn date(&self) -> &SystemTime {
+        match self {
+            Self::Text { date, .. } | Self::Picture { date, .. } => date,
+        }
+    }
+
+    pub const fn content(&self) -> &String {
+        match self {
+            Self::Text { content, .. } | Self::Picture { content, .. } => content,
         }
     }
 }

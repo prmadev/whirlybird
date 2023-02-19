@@ -10,12 +10,12 @@ pub struct PostCreated {
     id: ID,
     created: SystemTime,
     redmaple_id: ID,
-    post: Post,
+    post: Post<String, String>,
 }
 
 impl PostCreated {
     /// Creates an event that states that some content has been added to an existing `RedMaple`.
-    pub fn new(red_maple: &RedMaple<Argument, Views>, post: Post) -> Self {
+    pub fn new(red_maple: &RedMaple<Argument, Views>, post: Post<String, String>) -> Self {
         Self {
             id: ID::new(),
             created: std::time::SystemTime::now(),
@@ -35,7 +35,7 @@ impl PostCreated {
     }
 
     /// Gets the inner content that is represented by this event
-    pub const fn content(&self) -> &Post {
+    pub const fn content(&self) -> &Post<String, String> {
         &self.post
     }
 
@@ -47,7 +47,7 @@ impl PostCreated {
 
     /// returns the post information
     #[must_use]
-    pub const fn post(&self) -> &Post {
+    pub const fn post(&self) -> &Post<String, String> {
         &self.post
     }
 }
