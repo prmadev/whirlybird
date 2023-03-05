@@ -1,4 +1,9 @@
 <h1 align="center">
+THIS PROJECT IS NOW MOVED TO A NEW REPOSITORY
+</h1>
+you can find whirlybird in [here](https://github.com/amirography/soapberry/tree/main/crates/whirlybird).
+
+<h1 align="center">
 Whirlybird
 </h1>
 <p align="center">
